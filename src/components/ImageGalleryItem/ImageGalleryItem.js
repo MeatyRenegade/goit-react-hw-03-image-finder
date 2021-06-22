@@ -1,15 +1,15 @@
 import styles from "./ImageGalleryItem.module.css";
 
-const ImageGalleryItem = () => {
-  return (
-    <li className={styles.ImageGalleryItem}>
+const ImageGalleryItem = ({ pictures }) => {
+  return pictures.map((picture) => (
+    <li key={picture.id} className={styles.ImageGalleryItem}>
       <img
-        src="https://picsum.photos/200"
+        src={picture.webformatURL}
         alt=""
         className={styles.ImageGalleryItem__image}
       />
     </li>
-  );
+  ));
 };
 
 export default ImageGalleryItem;

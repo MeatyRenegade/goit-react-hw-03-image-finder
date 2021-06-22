@@ -21,5 +21,13 @@
 
 .Button:hover,
 .Button:focus {
-  background-color: #303f9f;
+  background-color: #130e5c;
+}
+
+.Button__container {
+  text-align: center;
+}
+
+.Button:active {
+  transform: translateY(4px);
 }

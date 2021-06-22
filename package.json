@@ -37,6 +37,7 @@
     ]
   },
   "devDependencies": {
+    "axios": "^0.21.1",
     "ghpages": "^0.0.10",
     "modern-normalize": "^1.1.0",
     "react-loader-spinner": "^4.0.0"
