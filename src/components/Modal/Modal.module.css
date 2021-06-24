@@ -15,3 +15,45 @@
   max-width: calc(100vw - 48px);
   max-height: calc(100vh - 24px);
 }
+
+.CloseButton {
+  top: 0;
+  right: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  outline: 0;
+  position: fixed;
+  background: #fff;
+  box-shadow: 0 0 0.625rem rgb(0 0 0 / 20%);
+}
+
+.CloseButton:hover {
+  background-color: #466d87;
+}
+
+.CloseButton::before {
+  top: 1.2rem;
+  left: 0.25rem;
+  width: 2rem;
+  height: 0.1rem;
+  content: "";
+  position: absolute;
+  background-color: #888;
+
+  transform: rotate(45deg);
+}
+
+.CloseButton::after {
+  top: 1.2rem;
+  left: 0.25rem;
+  width: 2rem;
+  height: 0.1rem;
+  content: "";
+  position: absolute;
+  background-color: #888;
+
+  transform: rotate(-45deg);
+}

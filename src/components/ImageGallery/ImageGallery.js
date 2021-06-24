@@ -2,10 +2,10 @@ import ImageGalleryItem from "../ImageGalleryItem/";
 
 import styles from "./ImageGallery.module.css";
 
-const ImageGallery = ({ pictures }) => {
+const ImageGallery = ({ pictures, onClick }) => {
   return (
     <ul className={styles.ImageGallery}>
-      <ImageGalleryItem pictures={pictures} />
+      <ImageGalleryItem pictures={pictures} onClick={onClick} />
     </ul>
   );
 };

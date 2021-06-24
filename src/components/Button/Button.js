@@ -6,7 +6,7 @@ class Button extends Component {
   render() {
     return (
       <div className={styles.Button__container}>
-        <button type="submit" className={styles.Button}>
+        <button type="button" className={styles.Button}>
           Load More
         </button>
       </div>
