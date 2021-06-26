@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import axios from 'axios';
 
 import Searchbar from './components/Searchbar/';
 import ImageGallery from './components/ImageGallery/';
@@ -7,90 +6,90 @@ import Container from './components/Container/';
 import Modal from './components/Modal/';
 import Button from './components/Button/';
 import Loader from './components/Loader';
-// import fetchPictures from './services/picturesApi';
-// import { scrollToBottom } from "./utils/utils";
-
-const BASE_URL = 'https://pixabay.com/api/';
-const API_KEY = '21331461-15f5bdfd142a82f8595dd354e';
-const PROPS = '&image_type=photo&orientation=horizontal&per_page=12';
+import { fetchPictures } from './services/picturesApi';
+import scrollToBottom from './utils/utils';
 
 class App extends Component {
   state = {
     pictures: [],
     searchQuery: '',
-    page: 1,
+    largeImg: '',
+    largeImgAlt: '',
+    currentPage: 1,
     showModal: false,
     isLoading: false,
     error: null,
   };
 
-  componentDidMount() {}
-
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searchQuery !== this.state.searchQuery) {
-      this.handlePictureSearch();
+      this.fetchPictures();
     }
   }
 
-  onSubmit = data => {
-    this.setState({ searchQuery: data });
+  onChangeQuery = query => {
+    this.setState({
+      searchQuery: query,
+      currentPage: 1,
+      pictures: [],
+      error: null,
+    });
   };
 
-  handlePictureSearch = data => {
-    // const { searchQuery } = this.state;
-
-    // const urlBase = {
-    //   query: searchQuery,
-    //   page: page,
-    // };
+  fetchPictures = () => {
+    const { currentPage, searchQuery } = this.state;
+    const options = { searchQuery, currentPage };
 
     this.setState({ isLoading: true });
 
-    // fetchPictures(urlBase)
-    //   .then((res) => {
-    //     this.setState((prev) => ({
-    //       pictures: [...prev.pictures, ...res],
-    //       page: prev.page + 1,
-    //     }));
-    //   })
-    //   .catch((error) => this.setState({ error }))
-    //   .finally(() => this.setState({ isLoading: false }));
-    axios
-      .get(`${BASE_URL}/?key=${API_KEY}&q=${data}${PROPS}`)
-      .then(response => this.setState({ pictures: response.data.hits }))
+    fetchPictures(options)
+      .then(pictures => {
+        this.setState(prevState => ({
+          pictures: [...prevState.pictures, ...pictures],
+          currentPage: prevState.currentPage + 1,
+        }));
+        scrollToBottom();
+      })
       .catch(error => this.setState({ error }))
-      .finally(() => this.setState({ isLoading: false }));
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
   };
 
-  ToggleModal = () => {
+  toggleModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
     }));
   };
 
+  getLargeImage = e => {
+    this.setState({
+      largeImg: e.target.dataset.source,
+      largeImgAlt: e.target.dataset.alt,
+    });
+
+    this.toggleModal();
+  };
+
   render() {
-    const { pictures, showModal, isLoading } = this.state;
+    const { pictures, showModal, isLoading, error, largeImg, largeImgAlt } =
+      this.state;
 
     return (
       <Container>
-        <Searchbar onSubmit={this.onSubmit} />
+        <Searchbar onSubmit={this.onChangeQuery} />
 
-        {pictures.length > 0 ? (
-          <>
-            <ImageGallery pictures={pictures} onClick={this.ToggleModal} />
-            <Button />
-          </>
-        ) : null}
+        <ImageGallery pictures={pictures} onClick={this.getLargeImage} />
+
+        {pictures.length > 0 && <Button onClick={this.fetchPictures} />}
 
         {showModal && (
-          <Modal onClose={this.ToggleModal}>
-            <img
-              src={`https://pixabay.com/get/gf3b5a7d06b75b7bac6a6845e1ca88c7fd53efeec8ccce7b522c40250be854ed6fc3743de7ad85fa657dcb6df9d1b9ce90da6fc7a694f64dc0e1ce3033c5412b2_1280.jpg`}
-              alt=""
-            />
+          <Modal onClose={this.toggleModal}>
+            <img src={largeImg} alt={largeImgAlt} />
           </Modal>
         )}
 
+        {error && <h1>Whoops, something went wrong: {error.message}</h1>}
         {isLoading && <Loader />}
       </Container>
     );
